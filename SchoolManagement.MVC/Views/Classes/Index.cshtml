@@ -1,0 +1,83 @@
+@model IEnumerable<SchoolManagement.MVC.Data.Class>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Classes</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-success"> + Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Time)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Course)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Lecture)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Time)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Course.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lecture.Id)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+
+                <button data-id="@item.Id" class="btn btn-danger deleteBtn" type="button">Delete</button>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<form asp-action="Delete" id="classDelete">
+    <input type="hidden" id="classId" name="Id" />
+</form>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('.table').DataTable();
+            $('.deleteBtn').click(function (e) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        );
+                        var btn = $(this);
+                        var id = btn.data("id");
+                        $('#classId').val(id);
+                        $('#classDelete').submit();
+                    }
+                })
+            })
+        })
+    </script>
+}
