@@ -145,7 +145,7 @@ namespace SchoolManagement.MVC.Controllers
         {
             if (_context.Courses == null)
             {
-                return Problem("Entity set 'SchoolManagementDbContext.Courses'  is null.");
+                return Problem("Entity set 'SchoolManagementDbContext.Courses' is null.");
             }
             var course = await _context.Courses.FindAsync(id);
             if (course != null)
