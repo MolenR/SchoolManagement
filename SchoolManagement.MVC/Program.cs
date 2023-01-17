@@ -1,3 +1,4 @@
+using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagement.MVC.Data;
@@ -5,6 +6,7 @@ using SchoolManagement.MVC.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the IoC container.
+
 /* Dependency Registration Injection */
 var connectionString = 
     builder.Configuration
@@ -15,6 +17,14 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<SchoolManagementDbContext>();
+
+/* Configuration of Auth0 Authentication services */
+builder.Services
+        .AddAuth0WebAppAuthentication(options => {
+            options.Domain = builder.Configuration["Auth0:Domain"];
+            options.ClientId = builder.Configuration["Auth0:ClientId"];
+        });
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -36,6 +46,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+/*-----IMPORTANT----- */
+/* Auth0 Authentication => Authorization */
+// Looks for the user after user is ok then give access
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
