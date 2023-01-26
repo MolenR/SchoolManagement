@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace SchoolManagement.MVC.Data;
@@ -11,7 +12,7 @@ public partial class SchoolManagementDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Class> Classes { get; set; }
+    public virtual DbSet<Classes> Classes { get; set; }
 
     public virtual DbSet<Course> Courses { get; set; }
 
@@ -23,7 +24,7 @@ public partial class SchoolManagementDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Class>(entity =>
+        modelBuilder.Entity<Classes>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Classes__3214EC072F9CE6FA");
 
@@ -57,7 +58,7 @@ public partial class SchoolManagementDbContext : DbContext
                 .HasConstraintName("FK__Enrollmen__Class__4316F928");
 
             entity.HasOne(d => d.Students).WithMany(p => p.Enrollments)
-                .HasForeignKey(d => d.StudentsId)
+                .HasForeignKey(d => d.StudentId)
                 .HasConstraintName("FK__Enrollmen__Stude__4222D4EF");
         });
 

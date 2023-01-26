@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SchoolManagement.MVC.Data;
 
-public partial class Class
+public partial class Classes
 {
     public int Id { get; set; }
 
-    public int? LectureId { get; set; }
+    public int LectureId { get; set; }
 
-    public int? CourseId { get; set; }
+    public int CourseId { get; set; }
 
     public TimeSpan? Time { get; set; }
 

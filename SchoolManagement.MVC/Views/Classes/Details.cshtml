@@ -1,4 +1,4 @@
-@model SchoolManagement.MVC.Data.Class
+@model SchoolManagement.MVC.Data.Classes
 
 @{
     ViewData["Title"] = "Details";
@@ -19,13 +19,13 @@
             @Html.DisplayNameFor(model => model.Course)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Course.Id)
+            @Model.Course.Code - @Model.Course.Name
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Lecture)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Lecture.Id)
+            @Model.Lecture.FirstName @Model.Lecture.LastName)
         </dd>
     </dl>
 </div>

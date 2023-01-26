@@ -50,8 +50,8 @@ public class EnrollmentsController : Controller
     // GET: Enrollments/Create
     public IActionResult Create()
     {
-        ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id");
-        ViewData["StudentsId"] = new SelectList(_context.Students, "Id", "Id");
+        ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Name");
+        ViewData["StudentId"] = new SelectList(_context.Students, "Id", "FirstName");
         return View();
     }
 
@@ -60,7 +60,7 @@ public class EnrollmentsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,StudentsId,ClassId,Grade")] Enrollment enrollment)
+    public async Task<IActionResult> Create([Bind("Id,StudentId,ClassId,Grade")] Enrollment enrollment)
     {
         if (ModelState.IsValid)
         {
@@ -69,7 +69,7 @@ public class EnrollmentsController : Controller
             return RedirectToAction(nameof(Index));
         }
         ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id", enrollment.ClassId);
-        ViewData["StudentsId"] = new SelectList(_context.Students, "Id", "Id", enrollment.StudentsId);
+        ViewData["StudentId"] = new SelectList(_context.Students, "Id", "Id", enrollment.StudentId);
         return View(enrollment);
     }
 
@@ -87,7 +87,7 @@ public class EnrollmentsController : Controller
             return NotFound();
         }
         ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id", enrollment.ClassId);
-        ViewData["StudentsId"] = new SelectList(_context.Students, "Id", "Id", enrollment.StudentsId);
+        ViewData["StudentId"] = new SelectList(_context.Students, "Id", "Id", enrollment.StudentId);
         return View(enrollment);
     }
 
@@ -96,7 +96,7 @@ public class EnrollmentsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,StudentsId,ClassId,Grade")] Enrollment enrollment)
+    public async Task<IActionResult> Edit(int id, [Bind("Id,StudentId,ClassId,Grade")] Enrollment enrollment)
     {
         if (id != enrollment.Id)
         {
@@ -124,7 +124,7 @@ public class EnrollmentsController : Controller
             return RedirectToAction(nameof(Index));
         }
         ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id", enrollment.ClassId);
-        ViewData["StudentsId"] = new SelectList(_context.Students, "Id", "Id", enrollment.StudentsId);
+        ViewData["StudentId"] = new SelectList(_context.Students, "Id", "Id", enrollment.StudentId);
         return View(enrollment);
     }
 

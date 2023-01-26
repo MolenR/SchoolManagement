@@ -6,9 +6,9 @@ namespace SchoolManagement.MVC.Data;
 public class LectureMetaData
 {
     [Display(Name = "First Name")]
-    public string FirstName { get; set; } = null!;
+    public string? FirstName { get; set; }
     [Display(Name = "Last Name")]
-    public string LastName { get; set; } = null!;
+    public string? LastName { get; set; }
 }
 
 [ModelMetadataType(typeof(LectureMetaData))]
