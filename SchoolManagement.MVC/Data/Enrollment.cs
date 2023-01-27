@@ -15,5 +15,5 @@ public partial class Enrollment
 
     public virtual Classes? Class { get; set; }
 
-    public virtual Student? Students { get; set; }
+    public virtual Student? Student { get; set; }
 }

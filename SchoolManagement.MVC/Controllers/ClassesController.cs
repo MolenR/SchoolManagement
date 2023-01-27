@@ -1,3 +1,4 @@
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,10 +12,12 @@ namespace SchoolManagement.MVC.Controllers;
 public class ClassesController : Controller
 {
     private readonly SchoolManagementDbContext _context;
+    private readonly INotyfService _notyfService;
 
-    public ClassesController(SchoolManagementDbContext context)
+    public ClassesController(SchoolManagementDbContext context, INotyfService notyfService)
     {
         _context = context;
+        _notyfService = notyfService;
     }
 
     // GET: Classes
@@ -34,22 +37,22 @@ public class ClassesController : Controller
             return NotFound();
         }
 
-        var classes = await _context.Classes
+        var @class = await _context.Classes
             .Include(q => q.Course)
             .Include(q => q.Lecture)
             .FirstOrDefaultAsync(m => m.Id == id);
-        if (classes == null)
+        if (@class == null)
         {
             return NotFound();
         }
 
-        return View(classes);
+        return View(@class);
     }
 
     // GET: Classes/Create
     public IActionResult Create()
     {
-        CreateSelectList();
+        //CreateSelectList();
 
         ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Name");
         ViewData["LectureId"] = new SelectList(_context.Lectures, "Id", "FirstName");
@@ -61,19 +64,19 @@ public class ClassesController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,LectureId,CourseId,Time")] Classes classes)
+    public async Task<IActionResult> Create([Bind("Id,LectureId,CourseId,Time")] Classes @class)
     {
         if (ModelState.IsValid)
         {
-            _context.Add(classes);
+            _context.Add(@class);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", classes.CourseId);
-        ViewData["LectureId"] = new SelectList(_context.Lectures, "Id", "Id", classes.LectureId);
+        ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", @class.CourseId);
+        ViewData["LectureId"] = new SelectList(_context.Lectures, "Id", "Id", @class.LectureId);
 
-        return View(classes);
+        return View(@class);
     }
 
     // GET: Classes/Edit/5
@@ -84,16 +87,16 @@ public class ClassesController : Controller
             return NotFound();
         }
 
-        var classes = await _context.Classes.FindAsync(id);
-        if (classes == null)
+        var @class = await _context.Classes.FindAsync(id);
+        if (@class == null)
         {
             return NotFound();
         }
 
-        ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", classes.CourseId);
-        ViewData["LectureId"] = new SelectList(_context.Lectures, "Id", "Id", classes.LectureId);
+        ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", @class.CourseId);
+        ViewData["LectureId"] = new SelectList(_context.Lectures, "Id", "Id", @class.LectureId);
 
-        return View(classes);
+        return View(@class);
     }
 
     // POST: Classes/Edit/5
@@ -101,9 +104,9 @@ public class ClassesController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,LectureId,CourseId,Time")] Classes classes)
+    public async Task<IActionResult> Edit(int id, [Bind("Id,LectureId,CourseId,Time")] Classes @class)
     {
-        if (id != classes.Id)
+        if (id != @class.Id)
         {
             return NotFound();
         }
@@ -112,12 +115,12 @@ public class ClassesController : Controller
         {
             try
             {
-                _context.Update(classes);
+                _context.Update(@class);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ClassExists(classes.Id))
+                if (!ClassExists(@class.Id))
                 {
                     return NotFound();
                 }
@@ -128,10 +131,10 @@ public class ClassesController : Controller
             }
             return RedirectToAction(nameof(Index));
         }
-        ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", classes.CourseId);
-        ViewData["LectureId"] = new SelectList(_context.Lectures, "Id", "Id", classes.LectureId);
+        ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", @class.CourseId);
+        ViewData["LectureId"] = new SelectList(_context.Lectures, "Id", "Id", @class.LectureId);
 
-        return View(classes);
+        return View(@class);
     }
 
     // GET: Classes/Delete/5
@@ -142,16 +145,16 @@ public class ClassesController : Controller
             return NotFound();
         }
 
-        var classes = await _context.Classes
+        var @class = await _context.Classes
             .Include(q => q.Course)
             .Include(q => q.Lecture)
             .FirstOrDefaultAsync(m => m.Id == id);
-        if (classes == null)
+        if (@class == null)
         {
             return NotFound();
         }
 
-        return View(classes);
+        return View(@class);
     }
 
     // POST: Classes/Delete/5
@@ -163,44 +166,46 @@ public class ClassesController : Controller
         {
             return Problem("Entity set 'SchoolManagementDbContext.Classes'  is null.");
         }
-        var classes = await _context.Classes.FindAsync(id);
-        if (classes != null)
+        var @class = await _context.Classes.FindAsync(id);
+        if (@class != null)
         {
-            _context.Classes.Remove(classes);
+            _context.Classes.Remove(@class);
         }
         
         await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
-    public async Task<ActionResult> ManageEnrollments(int id)
+    public async Task<ActionResult> ManageEnrollments(int classId)
     {
-        var classes = await _context.Classes
+        var @class = await _context.Classes
             .Include(q => q.Course)
             .Include(q => q.Lecture)
             .Include(q => q.Enrollments)
-                .ThenInclude(q => q.Students)
-            .FirstOrDefaultAsync(enroll => enroll.Id == id);
+                .ThenInclude(q => q.Student)
+            .FirstOrDefaultAsync(enroll => enroll.Id == classId);
 
         var students = await _context.Students.ToListAsync();
 
-        var model = new ClassEnrollmentViewModel();
-        model.Classes = new ClassViewModel
+        var model = new ClassEnrollmentViewModel
         {
-            Id = classes.Id,
-            CourseName = $"{classes.Course.Code} - {classes.Course.Name}",
-            LectureName = $"{classes.Lecture.FirstName} {classes.Lecture.LastName}",
-            Time = classes.Time.ToString()
+            Classes = new ClassViewModel
+            {
+                Id = @class.Id,
+                CourseName = $"{@class.Course?.Code} - {@class.Course?.Name}",
+                LectureName = $"{@class.Lecture?.FirstName} {@class.Lecture?.LastName}",
+                Time = @class.Time.ToString()
+            }
         };
 
-        foreach(var student in students)
+        foreach (var student in students)
         {
             model.StudentEnrollment.Add(new StudentEnrollmentViewModel
             {
                 Id = student.Id,
                 FirstName = student.FirstName,
                 LastName = student.LastName,
-                IsEnrolled = (classes?.Enrollments.Any(q => q.StudentId == student.Id))
+                IsEnrolled = (@class?.Enrollments.Any(q => q.StudentId == student.Id))
                 .GetValueOrDefault()
             }); 
         }
@@ -218,6 +223,7 @@ public class ClassesController : Controller
             enrollment.ClassId = classId;
             enrollment.StudentId = studentId;
             await _context.AddAsync(enrollment);
+            _notyfService.Success("Student Enrolled Successfully");
         }
         else
         {
@@ -226,12 +232,13 @@ public class ClassesController : Controller
             if(enrollment != null)
             {
                 _context.Remove(enrollment);
+                _notyfService.Warning("Student Unenrolled Successfully");
             }
         }
 
         await _context.SaveChangesAsync();
 
-        return RedirectToAction(nameof(ManageEnrollments), new { id = classId });
+        return RedirectToAction(nameof(ManageEnrollments), new { classId });
     }
 
     private bool ClassExists(int id)
@@ -239,10 +246,9 @@ public class ClassesController : Controller
       return (_context.Classes?.Any(e => e.Id == id)).GetValueOrDefault();
     }
 
-    /* NOT WORKING NULLREFERENCEEXEPTION*/
     /* REFACTOR OF CREATE CLASS DB QUERY
      -----------------------------------------------------------------------------*/
-    private void CreateSelectList()
+    /*private void CreateSelectList() *//* NOT WORKING NULLREFERENCE EXEPTION*//*
     {
         var courses = _context.Courses.Select(course => new
         {
@@ -260,5 +266,5 @@ public class ClassesController : Controller
         });
 
         ViewData["LectureId"] = new SelectList(_context.Lectures, "Id", "Fullname");
-    }
+    }*/
 }

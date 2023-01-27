@@ -14,7 +14,7 @@ public class EnrollmentMetaData
 
     public virtual Classes? Class { get; set; }
 
-    public virtual Student? Students { get; set; }
+    public virtual Student? Student { get; set; }
 }
 [ModelMetadataType(typeof(EnrollmentMetaData))]
 public partial class Enrollment { }

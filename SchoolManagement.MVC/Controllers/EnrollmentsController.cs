@@ -23,7 +23,7 @@ public class EnrollmentsController : Controller
     // GET: Enrollments
     public async Task<IActionResult> Index()
     {
-        var schoolManagementDbContext = _context.Enrollments.Include(e => e.Class).Include(e => e.Students);
+        var schoolManagementDbContext = _context.Enrollments.Include(e => e.Class).Include(e => e.Student);
         return View(await schoolManagementDbContext.ToListAsync());
     }
 
@@ -37,7 +37,7 @@ public class EnrollmentsController : Controller
 
         var enrollment = await _context.Enrollments
             .Include(e => e.Class)
-            .Include(e => e.Students)
+            .Include(e => e.Student)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (enrollment == null)
         {
@@ -125,7 +125,7 @@ public class EnrollmentsController : Controller
         }
         ViewData["ClassId"] = new SelectList(_context.Classes, "Id", "Id", enrollment.ClassId);
         ViewData["StudentId"] = new SelectList(_context.Students, "Id", "Id", enrollment.StudentId);
-        return View(enrollment);
+        return View(enrollment);    
     }
 
     // GET: Enrollments/Delete/5
@@ -138,7 +138,7 @@ public class EnrollmentsController : Controller
 
         var enrollment = await _context.Enrollments
             .Include(e => e.Class)
-            .Include(e => e.Students)
+            .Include(e => e.Student)
             .FirstOrDefaultAsync(m => m.Id == id);
         if (enrollment == null)
         {

@@ -57,7 +57,7 @@ public partial class SchoolManagementDbContext : DbContext
                 .HasForeignKey(d => d.ClassId)
                 .HasConstraintName("FK__Enrollmen__Class__4316F928");
 
-            entity.HasOne(d => d.Students).WithMany(p => p.Enrollments)
+            entity.HasOne(d => d.Student).WithMany(p => p.Enrollments)
                 .HasForeignKey(d => d.StudentId)
                 .HasConstraintName("FK__Enrollmen__Stude__4222D4EF");
         });
