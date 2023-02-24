@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagement.MVC.Data;
+using Serilog;
 using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,7 +32,10 @@ builder.Services
             options.ClientId = builder.Configuration["Auth0:ClientId"];
         });
 
-builder.Services.AddControllersWithViews();
+/* CONFIGURE SERILOG 
+------------------*/
+builder.Host.UseSerilog((ctx, lc) => lc.WriteTo.Console().ReadFrom.Configuration(ctx.Configuration));
+
 
 /* CONNECTION WITH COSMOSDB*/
 var documentClient = new CosmosClient(builder.Configuration
@@ -47,7 +51,13 @@ builder.Services.AddNotyf(c =>
     c.Position = NotyfPosition.TopRight;
 });
 
+builder.Services.AddControllersWithViews();
+
 var app = builder.Build();
+
+/* INVOKE SERILOG 
+---------------*/
+app.UseSerilogRequestLogging();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
