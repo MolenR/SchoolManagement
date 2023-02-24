@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 namespace SchoolManagement.MVC.Data;
 
-public partial class Enrollment
+public partial class Enrollment : BaseData
 {
-    public int Id { get; set; }
-
     public int? StudentId { get; set; }
 
     public int? ClassId { get; set; }

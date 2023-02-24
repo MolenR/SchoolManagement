@@ -34,7 +34,7 @@
                             </svg>
                         </button>
                     }
-                    else
+                    else if(student.IsEnrolled)
                     {
                         <button data-studentId="@student.Id" data-shouldEnroll="true" class="btn btn-success enrollmentBtn">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
@@ -68,7 +68,7 @@
     </svg>
 </a>
 
-<form asp-action="StudentEnrollment" id="classEnrollmentForm">
+<form asp-action="ManageEnrollments" id="classEnrollmentForm">
     <input type="hidden" id="classId" name="ClassId" value="@Model.Classes.Id" />
     <input type="hidden" id="studentId" name="StudentId"/>
     <input type="hidden" id="shouldEnroll" name="ShouldEnroll"/>
@@ -98,7 +98,7 @@
                         var shouldEnroll = btn.attr("data-shouldEnroll");
                         $('#studentId').val(studentId);
                         $('#shouldEnroll').val(shouldEnroll);
-                        $('#classEnrollmentForum').submit();
+                        $('#classEnrollmentForm').submit();
                     }
                 })
             })

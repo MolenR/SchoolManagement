@@ -1,9 +1,7 @@
 ﻿namespace SchoolManagement.MVC.Data;
 
-public partial class Classes
+public partial class Classes : BaseData
 {
-    public int Id { get; set; }
-
     public int? LectureId { get; set; }
 
     public int? CourseId { get; set; }

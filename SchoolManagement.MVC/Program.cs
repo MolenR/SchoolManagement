@@ -2,14 +2,17 @@ using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
 using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagement.MVC.Data;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the IoC container.
 
-/* Dependency Registration Injection */
+/* Dependency Registration Injection 
+----------------------------------*/
 var connectionString = 
     builder.Configuration
     .GetConnectionString("SchoolManagementDbConnection") ?? throw new InvalidOperationException("Connection string 'SchoolManagementDb' not found.");
@@ -20,7 +23,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<SchoolManagementDbContext>();
 
-/* Configuration of Auth0 Authentication services */
+/* Configuration of Auth0 Authentication services 
+-----------------------------------------------*/
 builder.Services
         .AddAuth0WebAppAuthentication(options => {
             options.Domain = builder.Configuration["Auth0:Domain"];
@@ -29,6 +33,13 @@ builder.Services
 
 builder.Services.AddControllersWithViews();
 
+/* CONNECTION WITH COSMOSDB*/
+var documentClient = new CosmosClient(builder.Configuration
+    .GetConnectionString("CosmosConnection"));
+builder.Services.AddSingleton(documentClient);
+
+/* ADDING NOTYF 
+-------------*/
 builder.Services.AddNotyf(c =>
 {
     c.DurationInSeconds = 5;

@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 namespace SchoolManagement.MVC.Data;
 
-public partial class Lecture
+public partial class Lecture : BaseData
 {
-    public int Id { get; set; }
-
     public string? FirstName { get; set; }
 
     public string? LastName { get; set; }
